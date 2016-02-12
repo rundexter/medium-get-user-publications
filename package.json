@@ -1,13 +1,17 @@
 {
-  "name": "medium-get-user-publications",
-  "version": "0.0.1",
-  "description": "",
-  "main": "index.js",
-  "author": "Alexander",
-  "license": "ISC",
-  "private": true,
-  "dependencies": {
-    "lodash": "^3.10.1",
-    "request": "^2.67.0"
-  }
+   "name": "medium-get-user-publications",
+   "version": "0.0.1",
+   "description": "Returns a full list of publications that the user is related to in some way",
+   "main": "index.js",
+   "author": "Run Dexter, Inc",
+   "license": "MIT",
+   "private": true,
+   "dependencies": {
+      "lodash": "^3.10.1",
+      "request": "^2.67.0"
+   },
+   "repository": {
+      "type": "git",
+      "url": "https://github.com/rundexter/medium-get-user-publications"
+   }
 }
