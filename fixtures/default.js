@@ -58,13 +58,7 @@ module.exports = _.merge({
     }
     , data: {
         local_test_step: {
-            /*
-             * You should update this section with some test input for testing your module
-             */
-            input: {
-                //Replace VAR1 with the name of an expected input, and add more inputs as needed.
-                userId: '19d225904cefbecfcb290ed2eb59d8cafa832c84af70aef1bcd326b60f9975262'
-            }
+            input: { }
         }
     }
 }, env);

@@ -1,17 +1,7 @@
-var util = require('./util.js');
-var request = require('request').defaults({
-    baseUrl: 'https://api.medium.com/'
-});
-
-var pickInputs = {
-       'userId': 'userId'
-    }, pickOutputs = {
-        'id': { keyName: 'data', fields: ['id'] },
-        'description': { keyName: 'data', fields: ['description'] },
-        'name': { keyName: 'data', fields: ['name'] },
-        'url': { keyName: 'data', fields: ['url'] },
-        'imageUrl': { keyName: 'data', fields: ['imageUrl'] }
-    };
+var _     = require('lodash')
+  , agent = require('superagent')
+  , q     = require('q')
+;
 
 module.exports = {
 
@@ -22,24 +12,24 @@ module.exports = {
      * @param {AppData} dexter Container for all data used in this workflow.
      */
     run: function(step, dexter) {
-        var inputs = util.pickInputs(step, pickInputs),
-            token = dexter.environment('medium_access_token');
+        var authorId = dexter.provider('medium').data('id')
+          , token = dexter.provider('medium').credentials('access_token')
+          , deferred = q.defer()
+        ;
 
-        if (!token)
-            return this.fail('A [medium_access_token] environment variable is required for this module');
+        agent.get('https://api.medium.com/v1/users/'+authorId+'/publications')
+          .set('Authorization', 'Bearer '+token)
+          .type('json')
+          .end(deferred.makeNodeResolver())
+        ;
 
-        if (!inputs.userId)
-            return this.fail('A [userId] need for this module.');
-
-        request.get({
-            uri: '/v1/users/' + inputs.userId+ '/publications',
-            auth: { bearer: token },
-            json: true
-        }, function (error, response, body) {
-            if (error)
-                this.fail(error);
-            else
-                this.complete(util.pickOutputs(body, pickOutputs));
-        }.bind(this));
-    }
+      deferred
+        .promise
+        .then(function(result) {
+           return _.get(result, 'body.data');
+        })
+        .then(this.complete.bind(this))
+        .catch(this.fail.bind(this))
+      ;
+   }
 };
